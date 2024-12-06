@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .ColourCoral {
+        background-color: #ff9491;
+        }
+
+    </style>
+
+    <!-- <script type="text/javascript" src="passtest.js"></script> -->
+    <link rel="stylesheet" href="passtest.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <script>
+        var text_max = 200;
+        $('#count_message').html('0 / ' + text_max );
+
+        $('#text').keyup(function() {
+        var text_length = $('#text').val().length;
+        var text_remaining = text_max - text_length;
+        
+        $('#count_message').html(text_length + ' / ' + text_max);
+        });
+    </script>
+    <script>addEventListener("DOMContentLoaded", (event) => {
+        const password = document.getElementById("password-input");
+        const passwordAlert = document.getElementById("password-alert");
+        const requirements = document.querySelectorAll(".requirements");
+        const leng = document.querySelector(".leng");
+        const bigLetter = document.querySelector(".big-letter");
+        const num = document.querySelector(".num");
+        const specialChar = document.querySelector(".special-char");
+      
+        requirements.forEach((element) => element.classList.add("wrong"));
+      
+        password.addEventListener("focus", () => {
+            passwordAlert.classList.remove("d-none");
+            if (!password.classList.contains("is-valid")) {
+                password.classList.add("is-invalid");
+            }
+        });
+      
+        password.addEventListener("input", () => {
+            const value = password.value;
+            const isLengthValid = value.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(value);
+            const hasNumber = /\d/.test(value);
+            const hasSpecialChar = /[!@#$%^&*()\[\]{}\\|;:'",<.>/?`~]/.test(value);
+      
+            leng.classList.toggle("good", isLengthValid);
+            leng.classList.toggle("wrong", !isLengthValid);
+            bigLetter.classList.toggle("good", hasUpperCase);
+            bigLetter.classList.toggle("wrong", !hasUpperCase);
+            num.classList.toggle("good", hasNumber);
+            num.classList.toggle("wrong", !hasNumber);
+            specialChar.classList.toggle("good", hasSpecialChar);
+            specialChar.classList.toggle("wrong", !hasSpecialChar);
+      
+            const isPasswordValid = isLengthValid && hasUpperCase && hasNumber && hasSpecialChar;
+      //console.log(isPasswordValid);
+            if (isPasswordValid) {
+                password.classList.remove("is-invalid");
+                password.classList.add("is-valid");
+      
+                requirements.forEach((element) => {
+                    element.classList.remove("wrong");
+                    element.classList.add("good");
+                });
+      
+                passwordAlert.classList.remove("alert-warning");
+                passwordAlert.classList.add("alert-success");
+            } else {
+                password.classList.remove("is-valid");
+                password.classList.add("is-invalid");
+      
+                passwordAlert.classList.add("alert-warning");
+                passwordAlert.classList.remove("alert-success");
+            }
+        });
+      
+        password.addEventListener("blur", () => {
+            passwordAlert.classList.add("d-none");
+        });
+      
+        /*  document.getElementById('myForm').addEventListener('submit', function(event) {
+            alert(isPasswordValid);
+            if (!isPasswordValid) {
+            event.preventDefault(); // Prevent form submission
+            alert("Please fill out the form correctly."); // Custom error message
+            }
+            else {
+            alert("aweaweaweawe");
+            }
+              // Function to validate password
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            return password.length >= 8;  // Password is valid if it has 8 or more characters
+        } */
+
+        // Event listener for form submission
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+             // Check if password is valid
+            console.log(isPasswordValid)            
+            alert(isPasswordValid);  // This will show 'true' or 'false'
+
+            if (!isPasswordValid) {
+                event.preventDefault();  // Prevent form submission if password is invalid
+                alert("Password must be at least 8 characters long.");
+            } else {
+                alert("Password is valid. Submitting form...");
+            }
+        });
+         });
+        
+    </script>
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+             // Check if password is valid
+            console.log(isPasswordValid)            
+            alert(isPasswordValid);  // This will show 'true' or 'false'
+
+            if (!isPasswordValid) {
+                event.preventDefault();  // Prevent form submission if password is invalid
+                alert("Password must be at least 8 characters long.");
+            } else {
+                alert("Password is valid. Submitting form...");
+            }
+        })
+
+    </script>
+    <style>
+        textarea {
+         resize: none;
+        }
+
+        #count_message {
+        background-color: smoke;
+        margin-top: -20px;
+        margin-right: 5px;
+        }
+    </style>
+    
+    <nav class="ColourCoral navbar navbar-expand-sm navbar-dark justify-content-center">
+        <div class="container-fluid justify-content-center  ">
+          <a class="navbar-brand" href="InitialPage.html">
+            <img src="black-circle-icon-download-transparent-17.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill"> 
+          </a>
+        </div>
+    </nav>
+    <p class="mx-auto custom-container p-4 text-center display-3">Sign Up</p>
+    <!-- input form boundry box-->
+    <div class="mx-auto"style="width: 80%;">
+        <form id="myForm" action="adduser.php" method="POST"  class="pl-7 pr-7 pt-4">
+            <!-- <script> isPasswordValid = False </script> -->
+            <!-- text inputs -->
+                <!-- first row -->
+                <div class="row">
+                <div class=" mx-auto col">
+                <label for="firstname" >First Name:</label>
+                <input maxlength="20" type="text" class="form-control" id="firstname" placeholder="Enter First Name" name="firstname" required>
+                </div>
+                <div class="mb-3 pl-7 pr-7 mx-auto col">
+                <label for="lastname" >Last Name:</label>
+                <input type="text" maxlength="20" class="form-control " id="lastname" placeholder="Enter Last Name" name="lastname" required>
+                </div>
+                </div>
+                <!-- second row-->
+                <!-- Radio Inputs -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email" maxlength="50" placeholder="Enter email" name="email" required>
+                </div>
+                <!-- Radio Inputs -->
+                <!-- third row -->
+                <div class="row">
+
+                <div class="mt-3 mb-3 col mx-auto">
+                    <label class="form-label mb-2">Gender:</label>
+
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio1" name="optradiogender" value="Male" checked >Male
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio2" name="optradiogender" value="Female">Female
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio3" name="optradiogender" value="Other">Other
+                        <label class="form-check-label"></label>
+                    </div>
+                </div>
+
+                <div class="mt-3 mb-4 col mx-auto">
+                    <label class="form-label mb-2">User Type:</label>
+
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio1" name="optradiotype" value="Athlete" checked >Athlete
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio2" name="optradiotype" value="Coach">Coach
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                </div>
+                </div>
+
+            <!-- password input -->
+            <!-- forth collum -->
+                
+                <div class="mb-2 mx-auto col">
+                    <label for="pwd" class="form-label">Password:</label>
+                    <input type="password" class="form-control" id="pwd" maxlength="20" placeholder="Enter password" name="pswd" required>
+                </div>
+               <!--  <div class="mb-3 mx-auto col">
+                    
+                    <input type="password" class="form-control" id="confirmpwd" maxlength="20" placeholder="Confirm password" name="confirmpswd" required>
+                </div> -->
+                <!-- <div class="row">
+                    <div class="col-6">
+                      <div class="input-group d-flex">
+                        <input
+                          type="password"
+                          class="form-control rounded mt-1"
+                          placeholder="Type your password"
+                          aria-label="password"
+                          aria-describedby="password"
+                          id="password-input"
+                          required                       />
+                        <div class="valid-feedback">Good</div>
+                        <div class="invalid-feedback">Wrong</div>
+                      </div>
+                    </div>
+                  
+                    <div class="col-6 mt-4 mt-xxl-0 w-auto h-auto">
+                  
+                      <div
+                        data-mdb-alert-init class="alert px-4 py-3 mb-0 d-none"
+                        role="alert"
+                        data-mdb-color="warning"
+                        id="password-alert"
+                        >
+                        <ul class="list-unstyled mb-0">
+                          <li class="requirements leng">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <i class="fas fa-times text-danger me-3"></i>
+                            Your password must have at least 8 chars</li>
+                          <li class="requirements big-letter">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <i class="fas fa-times text-danger me-3"></i>
+                            Your password must have at least 1 big letter.</li>
+                          <li class="requirements num">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <i class="fas fa-times text-danger me-3"></i>
+                            Your password must have at least 1 number.</li>
+                          <li class="requirements special-char">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <i class="fas fa-times text-danger me-3"></i>
+                            Your password must have at least 1 special char.</li>
+                        </ul>
+                      </div>
+                  
+                    </div>
+                  </div> -->
+                <div class="row">
+                <div class="col-sm-4 well">
+                    <label for="accdescrpiton" class="form-label">Account description:</label>
+                        <textarea class="form-control" id="accdescrpiton" name="accdescrpiton" 
+                           maxlength="300" placeholder="Describe you as a rower" rows="5"></textarea>
+                        <span class="pull-right label label-default" id="count_message"></span>
+                </div>
+                <div class="col-sm-4 well">
+                    <label for="sportscore" class="form-label">Sporting Scores:</label>
+                        <textarea class="form-control" id="sportscore" name="sportscore" 
+                           maxlength="100" placeholder="What are some of your Rowing scores..." rows="5"></textarea>
+                        <span class="pull-right label label-default" id="count_message"></span>
+                </div>
+                <div class="col-sm-4 well">
+                    <label for="sportingachievments" class="form-label">Sporting Achivements</label>
+                        <textarea class="form-control" id="sportingachievments" name="sportingachievments" 
+                           maxlength="200" placeholder="Describe you best achivemnents as a rower" rows="5"></textarea>
+                        <span class="pull-right label label-default" id="count_message"></span>
+                </div>
+                </div>
+                
+
+            <button type="submit" class="btn btn-primary mb-4">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- <script>addEventListener("DOMContentLoaded", (event) => {
+        const password = document.getElementById("password-input");
+        const passwordAlert = document.getElementById("password-alert");
+        const requirements = document.querySelectorAll(".requirements");
+        const leng = document.querySelector(".leng");
+        const bigLetter = document.querySelector(".big-letter");
+        const num = document.querySelector(".num");
+        const specialChar = document.querySelector(".special-char");
+      
+        requirements.forEach((element) => element.classList.add("wrong"));
+      
+        password.addEventListener("focus", () => {
+            passwordAlert.classList.remove("d-none");
+            if (!password.classList.contains("is-valid")) {
+                password.classList.add("is-invalid");
+            }
+        });
+      
+        password.addEventListener("input", () => {
+            const value = password.value;
+            const isLengthValid = value.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(value);
+            const hasNumber = /\d/.test(value);
+            const hasSpecialChar = /[!@#$%^&*()\[\]{}\\|;:'",<.>/?`~]/.test(value);
+      
+            leng.classList.toggle("good", isLengthValid);
+            leng.classList.toggle("wrong", !isLengthValid);
+            bigLetter.classList.toggle("good", hasUpperCase);
+            bigLetter.classList.toggle("wrong", !hasUpperCase);
+            num.classList.toggle("good", hasNumber);
+            num.classList.toggle("wrong", !hasNumber);
+            specialChar.classList.toggle("good", hasSpecialChar);
+            specialChar.classList.toggle("wrong", !hasSpecialChar);
+      
+            const isPasswordValid = isLengthValid && hasUpperCase && hasNumber && hasSpecialChar;
+      //console.log(isPasswordValid);
+            if (isPasswordValid) {
+                password.classList.remove("is-invalid");
+                password.classList.add("is-valid");
+      
+                requirements.forEach((element) => {
+                    element.classList.remove("wrong");
+                    element.classList.add("good");
+                });
+      
+                passwordAlert.classList.remove("alert-warning");
+                passwordAlert.classList.add("alert-success");
+            } else {
+                password.classList.remove("is-valid");
+                password.classList.add("is-invalid");
+      
+                passwordAlert.classList.add("alert-warning");
+                passwordAlert.classList.remove("alert-success");
+            }
+        });
+      
+        password.addEventListener("blur", () => {
+            passwordAlert.classList.add("d-none");
+        });
+      
+        /*  document.getElementById('myForm').addEventListener('submit', function(event) {
+            alert(isPasswordValid);
+            if (!isPasswordValid) {
+            event.preventDefault(); // Prevent form submission
+            alert("Please fill out the form correctly."); // Custom error message
+            }
+            else {
+            alert("aweaweaweawe");
+            }
+              // Function to validate password
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            return password.length >= 8;  // Password is valid if it has 8 or more characters
+        } */
+
+        // Event listener for form submission
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+             // Check if password is valid
+            console.log(isPasswordValid)            
+            alert(isPasswordValid);  // This will show 'true' or 'false'
+
+            if (!isPasswordValid) {
+                event.preventDefault();  // Prevent form submission if password is invalid
+                alert("Password must be at least 8 characters long.");
+            } else {
+                alert("Password is valid. Submitting form...");
+            }
+        });
+         });
+        
+    </script>
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+             // Check if password is valid
+            console.log(isPasswordValid)            
+            alert(isPasswordValid);  // This will show 'true' or 'false'
+
+            if (!isPasswordValid) {
+                event.preventDefault();  // Prevent form submission if password is invalid
+                alert("Password must be at least 8 characters long.");
+            } else {
+                alert("Password is valid. Submitting form...");
+            }
+        })
+
+    </script> -->
+</body>
+</html>

@@ -1,0 +1,287 @@
+<?php
+// Database connection using PDO
+include_once("connection.php");
+
+
+// Set default week date (if none is selected)
+$selectedDate = isset($_GET['weekDate']) ? $_GET['weekDate'] : date('Y-m-d');
+
+// Calculate start and end dates of the week based on the selected date
+$startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($selectedDate)));
+$endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($selectedDate)));
+
+// Calculate previous and next week dates
+$previousWeekDate = date('Y-m-d', strtotime($selectedDate . ' -7 days'));
+$nextWeekDate = date('Y-m-d', strtotime($selectedDate . ' +7 days'));
+
+// Query to fetch sessions within the selected week
+$sql = "SELECT UserID, Date, TimeCompleted, Distance, Time, Description 
+        FROM rowertrainingdonetbl 
+        WHERE Date >= :startOfWeek AND Date <= :endOfWeek
+        ORDER BY Date, TimeCompleted";
+
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':startOfWeek', $startOfWeek);
+$stmt->bindParam(':endOfWeek', $endOfWeek);
+$stmt->execute();
+
+// Initialize an empty array to hold sessions grouped by day
+$sessionsByDay = [
+    'Monday' => [],
+    'Tuesday' => [],
+    'Wednesday' => [],
+    'Thursday' => [],
+    'Friday' => [],
+    'Saturday' => [],
+    'Sunday' => []
+];
+
+// Populate the sessionsByDay array
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $dayOfWeek = date('l', strtotime($row['Date'])); // Get day name (e.g., 'Monday')
+    $sessionsByDay[$dayOfWeek][] = $row; // Add session to the corresponding day
+}
+?>
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .ColourCoral {
+        background-color: #ff9491;
+        }
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+    .full-screen-button {
+      height: 100vh; /* Full viewport height */
+      width: 100vw !important; /* Full viewport width */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn-secondary:hover, .btn-outline-secondary:hover {
+        background-color: #EBE0E1 !important;
+    }
+    .subtopnav {
+        /* position: fixed !important; */
+        /* background-color: #282A35!important; */
+        color: #f1f1f1;
+        padding-top: 25px;
+        margin-top: 50px;
+        letter-spacing: 1px;
+        font-size: 1;
+        width: 100%;
+        height: 50px;
+       
+      
+    }
+    </style>
+    <style>
+      table { width: 100%; border-collapse: collapse; }
+      th, td { padding: 15px; vertical-align: top; border: 1px solid #ddd; }
+      th { background-color: #f4f4f4; text-align: center; }
+      .session-button {
+          display: block;
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 10px;
+          text-align: left;
+      }
+      .session-content .category { font-size: 0.9em; color: #555; }
+      .session-content .time { font-size: 0.85em; color: #333; }
+      .session-content .title { font-weight: bold; margin-top: 5px; font-size: 1.1em; }
+      .session-content .location { font-size: 0.9em; color: #777; }
+  </style>
+    <link rel="stylesheet" href="Unistyle.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+
+
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="ColourCoral navbar navbar-expand-sm navbar-dark justify-content-center">
+        <div class="container-fluid justify-content-center  ">
+          <a class="navbar-brand" href="#">
+            <img src="black-circle-icon-download-transparent-17.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill"> 
+          </a>
+        </div>
+    </nav>
+    <!-- <div id="subtopnav" style="background-color: #000000;">p</div> -->
+    <div class="row">
+        <div class="col-sm-2 justify-content-center text-center" style="background-color: #fbeef6;height: 100vh;"><button class="btn CoralButton " style="margin-top: 10%;" data-bs-toggle="modal" data-bs-target="#myModal">Record session</button></div>
+        <div class="col-sm-10">
+          <div class="row d-flex justify-content-center">
+            <a href="?weekDate=<?= $previousWeekDate ?>" class="btn btn-primary">Previous Week</a>
+            <h2 class="d-flex justify-content-center">Weekly Schedule (<?= htmlspecialchars($startOfWeek) ?> to <?= htmlspecialchars($endOfWeek) ?>)</h2>
+            <a href="?weekDate=<?= $nextWeekDate ?>" class="btn btn-primary">Next Week</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <?php foreach (array_keys($sessionsByDay) as $day): ?>
+                        <th><?= $day ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <?php foreach ($sessionsByDay as $day => $sessions): ?>
+                        <td>
+                            <?php if (!empty($sessions)): ?>
+                                <?php foreach ($sessions as $session): ?>
+                                    <a href="#" class="btn btn-light session-button">
+                                        <div class="session-content">
+                                            <div class="title"><?= htmlspecialchars($session['Description'] ?? 'No Title') ?></div>
+                                            <div class="time"><?= htmlspecialchars($session['TimeCompleted']) ?></div>
+                                            <div class="time"><?= htmlspecialchars($session['Distance']) ?> Meters - <?= htmlspecialchars($session['Time'])/60 ?> Mins</div>
+                                            <div class="location"><?= htmlspecialchars($session['Location'] ?? 'No Location') ?></div>
+                                        </div>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div>No sessions</div>
+                            <?php endif; ?>
+                        </td>
+                    <?php endforeach; ?>
+                </tr>
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Record Session</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+      
+            <!-- Modal body -->
+            <div class="container mt-5">
+                <form action="addsession.php" method="POST">
+                  <div class="mb-3">
+                    <label for="dateInput" class="form-label">Select a Date</label>
+                    <div class="input-group" name="date">
+                      <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                      <input name="date" type="text" id="dateInput" class="form-control" placeholder="Select Date">
+                    </div>
+                  </div>
+                  <script>
+                    flatpickr("#dateInput", {
+                      enableTime: false,
+                      dateFormat: "Y-m-d", // Format for selected date (YYYY-MM-DD)
+                    });
+                    document.querySelector('form').addEventListener('submit', function(e) {
+                        const selectedDate = document.querySelector('#dateInput').value;
+                        console.log('Selected date:', selectedDate); // Log to verify date
+                    });
+                    
+                  </script>
+                  <script>
+                    flatpickr("#timeInput", {
+                      enableTime: true,
+                      noCalendar: true,
+                      dateFormat: "H:i",  // 24-hour format; for 12-hour format, use "h:i K"
+                      time_24hr: true,     // Use 24-hour format (set to false for 12-hour format)
+                      //scrollInput: true,      // Allows the user to scroll to select time
+                      //allowInput: true,         // Allows users to manually input time
+                      minuteIncrement: 1        // Allows minute-by-minute selection
+
+
+                    });
+
+                  </script>
+                  <div class="row">
+                    <div class="mb-3">
+                      <label for="timeInput" class="form-label">Select Time</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                        <input type="text" id="timeInput" name="timeInput" class="form-control" placeholder="Select Time">
+                      </div>
+                    </div>
+                    <script>
+                      flatpickr("#timeInput", {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "H:i",  // 24-hour format; for 12-hour format, use "h:i K"
+                        time_24hr: true,     // Use 24-hour format (set to false for 12-hour format)
+                        scrollInput: true,      // Allows the user to scroll to select time
+                        allowInput: true,         // Allows users to manually input time
+                        minuteIncrement: 1        // Allows minute-by-minute selection
+
+
+                      });
+
+                      // Add event listener for form submission
+                      document.querySelector('form').addEventListener('submit', function(e) {
+                        
+                    
+                        // Get the value from the time input field
+                        const selectedTime = document.querySelector('#timeInput').value;
+                    
+                        // Log the selected time to verify
+                        console.log('Selected time:', selectedTime);
+                      });
+                    </script>
+                    
+
+                  </div>
+
+                  <div class="row">
+                    <div class=" mx-auto col">
+                    <label for="distance" >Distance:</label>
+                    <div class="input-group">
+                    <input maxlength="20" type="number" class="form-control" id="distance" placeholder="Enter Distance" name="distance" required>
+                    <span class="input-group-text">Meters</span>
+                    </div>
+                    </div>
+                    <div class="mb-3 pl-7 pr-7 mx-auto col">
+                    <label for="time" >Time:</label>
+                    <div class="input-group" name="time">
+                    <input type="number" maxlength="20" class="form-control " id="Hours" placeholder="Hours" name="Hours" required >
+                    <span class="input-group-text">Hours</span>
+                    <input type="number" maxlength="20" class="form-control " id="Minutes" placeholder="Minutes" name="Minutes" required>
+                    <span class="input-group-text">Minutes</span>
+                    <input type="number" maxlength="20" class="form-control " id="Seconds" placeholder="Seconds" name="Seconds" required>
+                    <span class="input-group-text">Seconds</span>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="pb-2 well">
+                      <label for="description" class="form-label">Description:</label>
+                          <textarea class="form-control pb-2" id="description" name="description" 
+                             maxlength="300" placeholder="Describe your session" rows="5"></textarea>
+                          <span class="pull-right label label-default" id="count_message"></span>
+                    </div>
+            
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+      
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+      
+          </div>
+        </div>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

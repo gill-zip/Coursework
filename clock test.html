@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Tempus Dominus JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-5/5.39.0/js/tempusdominus-bootstrap-5.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-5/5.39.0/css/tempusdominus-bootstrap-5.min.css" rel="stylesheet">
+  <title>Time Picker with Tempus Dominus</title>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <form>
+      <div class="mb-3">
+        <label for="timeInput" class="form-label">Select Time</label>
+        <div class="input-group" id="timePicker">
+          <span class="input-group-text"><i class="bi bi-clock"></i></span>
+          <input type="text" class="form-control" id="timeInput" placeholder="Select Time">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Tempus Dominus JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-5/5.39.0/js/tempusdominus-bootstrap-5.min.js"></script>
+  
+  <!-- Initialize Tempus Dominus Time Picker -->
+  <script>
+    new tempusDominus.TempusDominus(document.getElementById('timePicker'), {
+      display: {
+        components: {
+          calendar: false,  // Disable calendar for time input only
+          hours: true,
+          minutes: true,
+          seconds: false  // Optionally add seconds
+        }
+      }
+    });
+  </script>
+</body>
+</html>
